@@ -50,6 +50,8 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers.Services
         }
         public string GenerateJwt(LoginDto dto)
         {
+            // dołączenie encji Role, przez co przez user potem będziemy mogli odnieść się do 
+            //danej właściwości Roli np. user.Name
             var user = _dbContext.Users.Include(u => u.Role).FirstOrDefault(p => p.Email == dto.Email);
              if(user is null)
              {
@@ -72,12 +74,18 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers.Services
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
                 new Claim("DateOfBirth", user.DateOfBirth.Value.ToString("yyyy-MM-dd")),
-                new Claim("Nationality", user.Nationality)
             };
-            //utworznie  prywatnego na podstawie wartosci z pliku appsettings.json
+            
+            if (!string.IsNullOrEmpty(user.Nationality))
+            {
+                claims.Add(new Claim("Nationality", user.Nationality));
+            }
+
+            //utworznie klucza prywatnego na podstawie wartosci z pliku appsettings.json
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
             // utworzenie kredencjałów potrzbnych do podpisana tokenu JWT

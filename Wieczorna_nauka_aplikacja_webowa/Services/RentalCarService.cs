@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Wieczorna_nauka_aplikacja_webowa.Authorization;
 using Wieczorna_nauka_aplikacja_webowa.Entities;
+using Wieczorna_nauka_aplikacja_webowa.Exceptions;
 using Wieczorna_nauka_aplikacja_webowa.Models;
 
 namespace Wieczorna_nauka_aplikacja_webowa.Services
@@ -25,11 +29,17 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
         private readonly IMapper _mapper;
         private readonly RentalCarDbContext _dbContext;
         private readonly ILogger<RentalCarService> _logger;
-        public RentalCarService(RentalCarDbContext dbcontext, IMapper mapper, ILogger<RentalCarService> logger)
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
+        public RentalCarService(RentalCarDbContext dbcontext, IMapper mapper, ILogger<RentalCarService> logger, 
+            IAuthorizationService authoraztionService /*dzięki temu serwisowi asp. net core na podstawie wymagania będzie wstanie wywołać odpowiedni handler*/,
+            IUserContextService userContextService)
         {
             _mapper = mapper;
             _dbContext = dbcontext;
             _logger = logger;
+            _authorizationService = authoraztionService;
+            _userContextService = userContextService;
         }
         public RentalCarDto GetById(long id)
         {
@@ -63,6 +73,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
         {
             //przypisanie do zmiennej, mapowania 
             var rentalCar = _mapper.Map<RentalCar>(dto);
+            rentalCar.CreatedById = _userContextService.GetUserId;
             _dbContext.RentalCars.Add(rentalCar);
             _dbContext.SaveChanges();
             return rentalCar.Id;
@@ -77,6 +88,14 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
                .Include(r => r.Vehicles)
                .FirstOrDefault(p => p.Id == id);
             if (rentalCar is null) throw new NotFoundExceptions("Restaurant not found");
+
+            var authorizationResult = _authorizationService
+               .AuthorizeAsync(_userContextService.User, rentalCar, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
             _dbContext.RentalCars.Remove(rentalCar);
             _dbContext.SaveChanges();
         }
@@ -90,6 +109,13 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
                .FirstOrDefault(p => p.Id == id);
 
             if (rentalCar is null) throw new NotFoundExceptions("Restaurant not found");
+
+           var authorizationResult = _authorizationService
+                .AuthorizeAsync(_userContextService.User, rentalCar, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
             rentalCar.Description = dto.Description;
             rentalCar.Name = dto.Name;

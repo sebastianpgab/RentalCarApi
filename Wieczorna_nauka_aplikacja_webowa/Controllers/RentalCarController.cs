@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Wieczorna_nauka_aplikacja_webowa.Entities;
 using Wieczorna_nauka_aplikacja_webowa.Models;
@@ -15,6 +16,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers
     [Route("api/rentalcar")]
     //dzięki temu atrybutowi sprawdzamy czy validacje w folderze Models są poprawne
     [ApiController]
+    [Authorize(Roles = "Admin,Manager")]
     public class RentalCarController : ControllerBase
     {
         readonly IRentalCarService _rentalCarService;
@@ -26,19 +28,23 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers
         [HttpPost]
         public ActionResult CreateRentalCar([FromBody] CreateRentalCarDto dto)
         {
+            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var id = _rentalCarService.Create(dto);
             return Created($"/api/carrental/{id}", null);
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "AtLeast20")]
         public ActionResult<IEnumerable<RentalCarDto>> GetAll()
         {
             var rentalCarsDtos = _rentalCarService.GetAll();
+            //var x = HttpContext.User;
             return Ok(rentalCarsDtos);
         }
 
         [HttpGet("{id}")]
+        //zapytanie bez nagłowka z Autoryzacją
+        [AllowAnonymous]
         public ActionResult<RentalCarDto> Get([FromRoute] long id)
         {
             var rentalCar = _rentalCarService.GetById(id);
@@ -47,6 +53,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers
         }
 
         [HttpDelete("delete/{id}")]
+        [Authorize (Policy = "MailIsGmail")]
         public ActionResult Delete([FromRoute] long id)
         {
             _rentalCarService.Delete(id);

@@ -20,8 +20,5 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
         //dodanie Roli, która będzie danego użytkownika reprezentować 
         //służy do łączenia ze sobą tabel
         public virtual Role Role {get; set;}
-
-
-
     }
 }

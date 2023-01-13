@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wieczorna_nauka_aplikacja_webowa.Entities;
 
 namespace Wieczorna_nauka_aplikacja_webowa.Migrations
 {
     [DbContext(typeof(RentalCarDbContext))]
-    partial class RentalCarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230106212820_RentalCarUserIdRepairNull")]
+    partial class RentalCarUserIdRepairNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,9 +79,6 @@ namespace Wieczorna_nauka_aplikacja_webowa.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -191,7 +190,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Migrations
                         .IsRequired();
 
                     b.HasOne("Wieczorna_nauka_aplikacja_webowa.Entities.User", "CreatedBy")
-                        .WithMany("RentalCar")
+                        .WithMany()
                         .HasForeignKey("CreatedById1");
 
                     b.Navigation("Address");
@@ -229,11 +228,6 @@ namespace Wieczorna_nauka_aplikacja_webowa.Migrations
             modelBuilder.Entity("Wieczorna_nauka_aplikacja_webowa.Entities.RentalCar", b =>
                 {
                     b.Navigation("Vehicles");
-                });
-
-            modelBuilder.Entity("Wieczorna_nauka_aplikacja_webowa.Entities.User", b =>
-                {
-                    b.Navigation("RentalCar");
                 });
 #pragma warning restore 612, 618
         }

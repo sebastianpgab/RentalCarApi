@@ -16,13 +16,13 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
         {
             if (_dbContext.Database.CanConnect())
             {
-                if (_dbContext.Roles.Any())
+                if (!_dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
                     _dbContext.Roles.AddRange(roles);
                     _dbContext.SaveChanges();
                 }
-                if (_dbContext.RentalCars.Any())
+                if (!_dbContext.RentalCars.Any())
                 {
                     var rentalCars = GetRentalCars();
                     _dbContext.RentalCars.AddRange(rentalCars);
