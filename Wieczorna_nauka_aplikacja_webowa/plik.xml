@@ -1,0 +1,11 @@
+<publishData>
+	<publishProfile profileName="rentalcar-api-app - Web Deploy" publishMethod="MSDeploy" publishUrl="rentalcar-api-app.scm.azurewebsites.net:443" msdeploySite="rentalcar-api-app" userName="$rentalcar-api-app" userPWD="FEfu2FvsnMdaynF8MSAiCHtaJFjSLGz7AdpAlH5ztfNTQmR9vTr2KfXRBzkp" destinationAppUrl="https://rentalcar-api-app.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="http://windows.azure.com" webSystem="WebSites">
+		<databases />
+	</publishProfile>
+	<publishProfile profileName="rentalcar-api-app - FTP" publishMethod="FTP" publishUrl="ftps://waws-prod-am2-343.ftp.azurewebsites.windows.net/site/wwwroot" ftpPassiveMode="True" userName="rentalcar-api-app\$rentalcar-api-app" userPWD="FEfu2FvsnMdaynF8MSAiCHtaJFjSLGz7AdpAlH5ztfNTQmR9vTr2KfXRBzkp" destinationAppUrl="https://rentalcar-api-app.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="http://windows.azure.com" webSystem="WebSites">
+		<databases />
+	</publishProfile>
+	<publishProfile profileName="rentalcar-api-app - Zip Deploy" publishMethod="ZipDeploy" publishUrl="rentalcar-api-app.scm.azurewebsites.net:443" userName="$rentalcar-api-app" userPWD="FEfu2FvsnMdaynF8MSAiCHtaJFjSLGz7AdpAlH5ztfNTQmR9vTr2KfXRBzkp" destinationAppUrl="https://rentalcar-api-app.azurewebsites.net" SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink="" controlPanelLink="http://windows.azure.com" webSystem="WebSites">
+		<databases />
+	</publishProfile>
+</publishData>

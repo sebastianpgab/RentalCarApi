@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +24,7 @@ using Wieczorna_nauka_aplikacja_webowa.Controllers.Services;
 using Wieczorna_nauka_aplikacja_webowa.Entities;
 using Wieczorna_nauka_aplikacja_webowa.Middleware;
 using Wieczorna_nauka_aplikacja_webowa.Models;
+using Wieczorna_nauka_aplikacja_webowa.Models.Validators;
 using Wieczorna_nauka_aplikacja_webowa.Services;
 using Wieczorna_nauka_aplikacja_webowa.Services.Services;
 
@@ -81,13 +83,12 @@ namespace Wieczorna_nauka_aplikacja_webowa
                 options.AddPolicy("CreatedAtLeast2RentalCars", builder => builder.AddRequirements(new CreatedMultipleRentalCarsRequirement(2)));
                 options.AddPolicy("MailIsGmail", builder => builder.AddRequirements(new UsingMailIsGmail("gmail.com")));
             });
-            services.AddScoped<IProba, Proba>();
             services.AddScoped<IAuthorizationHandler, UsingMailIsGmailRequirement>();
             services.AddScoped<IAuthorizationHandler, CreatedMultipleRentalCarsRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             services.AddControllers().AddFluentValidation();
-            services.AddDbContext<RentalCarDbContext>();
+          
             services.AddScoped<RentalCarSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IRentalCarService, RentalCarService>();
@@ -96,16 +97,28 @@ namespace Wieczorna_nauka_aplikacja_webowa
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto/*model jaki walidujemy*/>, RegisterUserDtoValidator/*walidacje modelu*/>();
+            services.AddScoped<IValidator<RentalCarQuery/*model jaki walidujemy*/>, RentalCarValidator/*walidacje modelu*/>();
             services.AddMvcCore().AddAuthorization();
             services.AddScoped<RequestTimeMiddleware>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontEndClient", builder =>
+                builder.AllowAnyMethod().AllowAnyHeader().WithOrigins(Configuration["AllowedOrignis"]));
+            });
+            services.AddDbContext<RentalCarDbContext>
+              (options => options.UseSqlServer(Configuration.GetConnectionString("RentalCarDbConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RentalCarSeeder seeder)
         {
+
+            app.UseResponseCaching();
+            app.UseStaticFiles();
+            app.UseCors("FrontEndClient");
             seeder.Seed();
             if (env.IsDevelopment())
             {

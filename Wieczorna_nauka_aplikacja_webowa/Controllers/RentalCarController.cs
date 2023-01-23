@@ -34,11 +34,11 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AtLeast20")]
-        public ActionResult<IEnumerable<RentalCarDto>> GetAll()
+        // [Authorize(Policy = "MailIsGmail")]
+        [AllowAnonymous]
+        public ActionResult<IEnumerable<RentalCarDto>> GetAll([FromQuery] RentalCarQuery query)
         {
-            var rentalCarsDtos = _rentalCarService.GetAll();
-            //var x = HttpContext.User;
+            var rentalCarsDtos = _rentalCarService.GetAll(query);
             return Ok(rentalCarsDtos);
         }
 

@@ -6,7 +6,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
 {
     public class RentalCarSeeder
     {
-        readonly RentalCarDbContext _dbContext;
+        private readonly RentalCarDbContext _dbContext;
         public RentalCarSeeder(RentalCarDbContext dbContext)
         {
             _dbContext = dbContext;

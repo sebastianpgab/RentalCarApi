@@ -12,9 +12,9 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
         public bool Advance { get; set; }
         public string ContactNumber { get; set; }
         public string ContactEmail { get; set; }
-        //klucz obcy do tabeli z adresem
         public int? CreatedById { get; set; }
         public virtual User CreatedBy { get; set; }
+        //klucz obcy do tabeli z adresem
         public long AddressID { get; set; } 
         /* Aby było się łatwiej posługiwać obiektem typu RentalCar,
         kiedy pobierzemy go z baz danych, będzie bezpośredni dostęp do Adresu danej Wypozyczalni, jesli

@@ -8,7 +8,7 @@ using Wieczorna_nauka_aplikacja_webowa.Entities;
 
 namespace Wieczorna_nauka_aplikacja_webowa.Authorization
 {
-    public class ResourceOperationRequirementHandler : AuthorizationHandler<ResourceOperationRequirement, RentalCar>
+    public class ResourceOperationRequirementHandler : AuthorizationHandler<ResourceOperationRequirement/*klasa wymagania*/, RentalCar /*typ zasobu*/>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ResourceOperationRequirement requirement, RentalCar rentalCar)
         {

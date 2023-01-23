@@ -10,7 +10,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Authorization
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UsingMailIsGmail requirement)
         {
-            var userEmail = context.User.FindFirst(c => c.Type == ClaimTypes.Name).Value;
+            var userEmail = context.User.FindFirst(c => c.Type == ClaimTypes.Email).Value;
 
 
             if (userEmail.EndsWith(requirement.MailName))

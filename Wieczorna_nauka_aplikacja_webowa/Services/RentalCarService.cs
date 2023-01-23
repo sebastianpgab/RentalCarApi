@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Wieczorna_nauka_aplikacja_webowa.Authorization;
@@ -18,7 +19,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
     public interface IRentalCarService
     {
         RentalCarDto GetById(long id);
-        IEnumerable<RentalCarDto> GetAll();
+        PageResult<RentalCarDto> GetAll(RentalCarQuery query);
         long Create(CreateRentalCarDto dto);
         void Delete(long id);
         void Update(EditRentalCarDto dto, long id);
@@ -55,18 +56,43 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
             return result;
         }
 
-        public IEnumerable<RentalCarDto> GetAll()
+        public PageResult<RentalCarDto> GetAll(RentalCarQuery query)
         {
-            var rentalCars = _dbContext
+            var baseQuery = _dbContext
                 .RentalCars
                 // wskazuje, ze chce dolaczyc zarowno Adres jak i wartosci z tabeli Vehicles
                 //tworzac takie zapytanie EntityFramework będzie wstanie dolaczyc odpowiednie tabele do wynikow zapytania
                 .Include(r => r.Address)
                 .Include(r => r.Vehicles)
-                .ToList();
-            var rentalCarsDtos = _mapper.Map<List<RentalCarDto>>(rentalCars);
+                //zrobienie filtrowania po słowie kluczowym 
+                .Where(r => query.SearchPhrase == null || (r.Name.ToLower()
+                .Contains(query.SearchPhrase.ToLower()) || r.Description.ToLower()
+                .Contains(query.SearchPhrase.ToLower())));
 
-            return rentalCarsDtos;
+            if (!string.IsNullOrEmpty(query.SortBy))
+            {
+                var columnSelectors = new Dictionary<string, Expression<Func<RentalCar, object>>>
+                {
+                    { nameof(RentalCar.Name), r => r.Name },
+                    { nameof(RentalCar.Description), r => r.Description },
+                };
+                var selectedColumn = columnSelectors[query.SortBy];
+                baseQuery = query.SortDirection == SortDirection.ASC
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var rentalCars = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
+                .ToList();
+
+            var totalItemCount = baseQuery.Count();
+
+            var rentalCarsDtos = _mapper.Map<List<RentalCarDto>>(rentalCars);
+            var result = new PageResult<RentalCarDto>(rentalCarsDtos, totalItemCount, query.PageSize, query.PageNumber);
+
+            return result;
         }
 
         public long Create(CreateRentalCarDto dto)
@@ -89,8 +115,9 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
                .FirstOrDefault(p => p.Id == id);
             if (rentalCar is null) throw new NotFoundExceptions("Restaurant not found");
 
+            //dzięki temu ASP.Net będzie wiedział jaki wywołać handler
             var authorizationResult = _authorizationService
-               .AuthorizeAsync(_userContextService.User, rentalCar, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+               .AuthorizeAsync(_userContextService.User/*przekazujemy zalogowanego usera*/, rentalCar/*zasób*/, new ResourceOperationRequirement(ResourceOperation.Delete)).Result/*oraz informację jaki handler wykonać*/;
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();
