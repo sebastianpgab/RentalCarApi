@@ -24,6 +24,7 @@ namespace Wieczorna_nauka_aplikacja_webowa
             CreateMap<Vehicle, VehicleDto>();
             CreateMap<VehicleDto, Vehicle>();
             CreateMap<Vehicle, EditVehicleDto>();
+            CreateMap<CreateAddressDto, Address>();
 
 
 

@@ -21,12 +21,12 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<RentalCar>().Property(r => r.Name).IsRequired().HasMaxLength(50);
-           // modelBuilder.Entity<Vehicle>().Property(r => r.RegistrationNumber).IsRequired();
-            //modelBuilder.Entity<Address>().Property(r => r.Street).IsRequired();
-            //modelBuilder.Entity<Address>().Property(r => r.PostCode).IsRequired();
-            //modelBuilder.Entity<User>().Property(r => r.Email).IsRequired();
-           // modelBuilder.Entity<Role>().Property(r => r.Name).IsRequired();
+            modelBuilder.Entity<RentalCar>().Property(r => r.Name).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<Vehicle>().Property(r => r.RegistrationNumber).IsRequired();
+            modelBuilder.Entity<Address>().Property(r => r.Street).IsRequired();
+            modelBuilder.Entity<Address>().Property(r => r.PostCode).IsRequired();
+            modelBuilder.Entity<User>().Property(r => r.Email).IsRequired();
+            modelBuilder.Entity<Role>().Property(r => r.Name).IsRequired();
         }
 
         /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,6 +17,13 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
         {
             if (_dbContext.Database.CanConnect())
             {
+                //zwraca liste migracji, które jeszcze nie zostały zaaplikowane 
+                var pendingMigrations =_dbContext.Database.GetPendingMigrations();
+                if(pendingMigrations != null && pendingMigrations.Any())
+                {
+                    _dbContext.Database.Migrate();
+                }
+
                 if (!_dbContext.Roles.Any())
                 {
                     var roles = GetRoles();

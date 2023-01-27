@@ -16,7 +16,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers
     [Route("api/rentalcar")]
     //dzięki temu atrybutowi sprawdzamy czy validacje w folderze Models są poprawne
     [ApiController]
-    [Authorize(Roles = "Admin,Manager")]
+   // [Authorize(Roles = "Admin,Manager")]
     public class RentalCarController : ControllerBase
     {
         readonly IRentalCarService _rentalCarService;
