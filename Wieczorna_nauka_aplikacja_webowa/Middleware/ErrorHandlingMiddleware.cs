@@ -42,7 +42,6 @@ namespace Wieczorna_nauka_aplikacja_webowa.Middleware
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-
                 context.Response.StatusCode = 500;
                 await context.Response.WriteAsync("Something went wrong");
             }

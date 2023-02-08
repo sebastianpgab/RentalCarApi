@@ -35,9 +35,9 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services
         {
             //pobieram > mapuje > dodaje;
 
-            var address = _mapper.Map<Address>(dto);
-            _dbContext.Addresses.Add(address);
-            _dbContext.SaveChanges();
+         var address = _mapper.Map<Address>(dto);
+         _dbContext.Addresses.Add(address);
+         _dbContext.SaveChanges();
 
             return dto;
 

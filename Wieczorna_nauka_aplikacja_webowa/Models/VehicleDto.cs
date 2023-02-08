@@ -11,6 +11,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Models
         public string Type { get; set; }
         public decimal Price { get; set; }
         public bool HasGas { get; set; }
+        public long? CreatedById { get; set; }
         public string HorsePower { get; set; }
         public bool HasFourWheelDrive { get; set; }
         public DateTime FirstRegistration { get; set; }

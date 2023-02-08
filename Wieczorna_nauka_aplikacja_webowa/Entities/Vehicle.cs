@@ -5,6 +5,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
     public class Vehicle
     {
         public long Id { get; set; }
+        public long? CreatedById { get; set; }
         public string Type { get; set; }
         public decimal Price { get; set; }
         public bool HasGas { get; set; }

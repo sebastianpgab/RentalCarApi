@@ -9,7 +9,7 @@ namespace Wieczorna_nauka_aplikacja_webowa.Models.Validators
 {
     public class RentalCarValidator : AbstractValidator<RentalCarQuery>
     {
-        private int[] allowPagesSize = new[] { 5, 10, 15 };
+        private int[] allowPagesSize = new[] { 5, 10, 15, 50 };
         private string[] allowedSortByColumnNames =
         {
             nameof(RentalCar.Name),
@@ -35,7 +35,8 @@ namespace Wieczorna_nauka_aplikacja_webowa.Models.Validators
                     context.AddFailure("PageSize", $"PageSize must in [{string.Join(",", allowPagesSize)}]");
                 }
             });
-
+       
         }
+       
     }
 }

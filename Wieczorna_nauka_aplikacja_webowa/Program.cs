@@ -79,8 +79,8 @@ builder.Host.UseNLog();
     builder.Services.AddScoped<IAuthorizationHandler, CreatedMultipleRentalCarsRequirementHandler>();
     builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
     builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+    builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementVehicleHandler>();
     builder.Services.AddControllers().AddFluentValidation();
-
     builder.Services.AddScoped<RentalCarSeeder>();
     builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
     builder.Services.AddScoped<IRentalCarService, RentalCarService>();
@@ -101,8 +101,7 @@ builder.Host.UseNLog();
             options.AddPolicy("FrontEndClient", policyBuilder =>
             policyBuilder.AllowAnyMethod().AllowAnyHeader().WithOrigins(builder.Configuration["AllowedOrignis"]));
         });
-    builder.Services.AddDbContext<RentalCarDbContext>
-          (options => options.UseSqlServer(builder.Configuration.GetConnectionString("RentalCarDbConnection")));
+    builder.Services.AddDbContext<RentalCarDbContext>();
 
 //configure
 

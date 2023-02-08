@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Wieczorna_nauka_aplikacja_webowa.Authorization;
 using Wieczorna_nauka_aplikacja_webowa.Entities;
+using Wieczorna_nauka_aplikacja_webowa.Exceptions;
 using Wieczorna_nauka_aplikacja_webowa.Models;
 
 namespace Wieczorna_nauka_aplikacja_webowa.Services.Services
@@ -25,17 +28,23 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services.Services
     {
         private readonly IMapper _mapper;
         private readonly RentalCarDbContext _dbContext;
-        public VehicleService(IMapper mapper,  RentalCarDbContext dbContext)
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
+
+        public VehicleService(IMapper mapper,  RentalCarDbContext dbContext, IAuthorizationService authoraztionService, IUserContextService userContextService)
         {
             _mapper = mapper;
             _dbContext = dbContext;
+            _authorizationService = authoraztionService;
+            _userContextService = userContextService;
         }
         public long Create(int rentalcarId, CreateVehicleDto dto)
         {
             var vehicle = _dbContext.RentalCars.FirstOrDefault(r => r.Id == rentalcarId);
             if (vehicle is null) throw new NotFoundExceptions("RentalCar not found");
-
+           // var vehicles = _dbContext.Vehicles;
             var vehicleEntity =_mapper.Map<Vehicle>(dto);
+            vehicleEntity.CreatedById = _userContextService.GetUserId;
             vehicleEntity.RentalCarId = rentalcarId;
             _dbContext.Vehicles.Add(vehicleEntity);
             _dbContext.SaveChanges();
@@ -76,6 +85,15 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services.Services
         {
             var vehicle = _dbContext.Vehicles.FirstOrDefault(p => p.Id == vehicleId && p.RentalCarId == rentalcarId);
             if(vehicle is null ) throw new NotFoundExceptions("Vehicle not found");
+
+            //tu jest błąd !!! nie mozna usunąć, chyba coś nie tak z przekazaniem zasobu lub usera  ?
+            var authorizationResult = _authorizationService
+            .AuthorizeAsync(_userContextService.User/*przekazujemy zalogowanego usera*/, vehicle/*zasób*/, new ResourceOperationRequirement(ResourceOperation.Delete)).Result/*oraz informację jaki handler wykonać*/;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
             _dbContext.Vehicles.Remove(vehicle);
             _dbContext.SaveChanges();
         }
@@ -93,18 +111,19 @@ namespace Wieczorna_nauka_aplikacja_webowa.Services.Services
         {
            var vehicle = _dbContext.Vehicles.FirstOrDefault(p => p.Id == vehicleId && p.RentalCarId == rentalcarId);
             if (vehicle is null) throw new NotFoundExceptions("Not found  Vehicle - UpdateVehicle");
-            vehicle.Type = dto.Type;
+
+           /* vehicle.Type = dto.Type;
             vehicle.Price = dto.Price;
             vehicle.HasGas = dto.HasGas;
             vehicle.HorsePower = dto.HorsePower;
-            vehicle.HasFourWheelDrive = dto.HasFourWheelDrive;
+            vehicle.HasFourWheelDrive = dto.HasFourWheelDrive;*/
 
 
             var vehicleDto = _mapper.Map<EditVehicleDto>(vehicle);
             _dbContext.SaveChanges();
 
             return vehicleDto;
-    }
+        }
 
 
 

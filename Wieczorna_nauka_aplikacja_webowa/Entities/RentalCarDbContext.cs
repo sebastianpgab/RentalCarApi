@@ -8,11 +8,8 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
 {
     public class RentalCarDbContext : DbContext
     {
-        public RentalCarDbContext(DbContextOptions<RentalCarDbContext> options) : base(options)
-        {
 
-        }
-        //private string _connectionString = "Server=SEBASTIANPGAB\\SQLEXPRESS; Database=RentalCarDb; Trusted_Connection=True";
+        private string _connectionString = "Server=SEBASTIANPGAB\\SQLEXPRESS; Database=RentalCarDb; Trusted_Connection=True";
         public DbSet<RentalCar> RentalCars { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
@@ -29,10 +26,10 @@ namespace Wieczorna_nauka_aplikacja_webowa.Entities
             modelBuilder.Entity<Role>().Property(r => r.Name).IsRequired();
         }
 
-        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString);
-        }*/
+        }
 
     }
 }

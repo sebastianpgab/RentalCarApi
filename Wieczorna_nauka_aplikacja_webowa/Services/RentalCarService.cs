@@ -13,7 +13,6 @@ using Wieczorna_nauka_aplikacja_webowa.Authorization;
 using Wieczorna_nauka_aplikacja_webowa.Entities;
 using Wieczorna_nauka_aplikacja_webowa.Exceptions;
 using Wieczorna_nauka_aplikacja_webowa.Models;
-
 namespace Wieczorna_nauka_aplikacja_webowa.Services
 {
     public interface IRentalCarService

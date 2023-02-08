@@ -12,7 +12,6 @@ namespace Wieczorna_nauka_aplikacja_webowa.Authorization
         {
             var userEmail = context.User.FindFirst(c => c.Type == ClaimTypes.Email).Value;
 
-
             if (userEmail.EndsWith(requirement.MailName))
             {
                 context.Succeed(requirement);
