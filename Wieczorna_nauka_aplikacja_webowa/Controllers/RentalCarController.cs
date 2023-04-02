@@ -67,7 +67,5 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers
             _rentalCarService.Update(dto, id);
             return Ok();
         }
-
-
     }
 }

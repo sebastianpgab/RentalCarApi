@@ -25,6 +25,5 @@ namespace Wieczorna_nauka_aplikacja_webowa.Controllers
             var result = _addressService.CreateAddress(createAddressDto);
             return Ok(200);
         }
-
     }
 }

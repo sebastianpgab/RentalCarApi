@@ -85,7 +85,7 @@ builder.Host.UseNLog();
     builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
     builder.Services.AddScoped<IRentalCarService, RentalCarService>();
     builder.Services.AddScoped<IVehicleService, VehicleService>();
-    builder.Services.AddScoped<IAccountService, AccountService>();
+    builder.Services.AddSingleton<IAccountService, AccountService>();
     builder.Services.AddScoped<IAddressService, AddressService>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
