@@ -33,7 +33,6 @@ builder.Host.UseNLog();
 
 //configure service
 
-
     var authenitactionSettings = new AuthenticationSettings();
     //bindowanie obiektów z apisettingsjson do obektu authenitactionSettings - bindowanie (wi¹zaæ)
     //czyli proces w ktorym dane z jsona wi¹¿emy z obiketem authenitactionSettings;
@@ -85,7 +84,7 @@ builder.Host.UseNLog();
     builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
     builder.Services.AddScoped<IRentalCarService, RentalCarService>();
     builder.Services.AddScoped<IVehicleService, VehicleService>();
-    builder.Services.AddSingleton<IAccountService, AccountService>();
+    builder.Services.AddScoped<IAccountService, AccountService>();
     builder.Services.AddScoped<IAddressService, AddressService>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
